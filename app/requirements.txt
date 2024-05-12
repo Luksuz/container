@@ -1,7 +1,6 @@
 flask
 torch 
 numpy
-flask_cors
 pillow
 roboflow
 pandas

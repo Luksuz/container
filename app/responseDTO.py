@@ -4,8 +4,12 @@ INVALID_FILE_TYPE = {"code": 400,
 NO_PREDICTIONS = {"code": 400,
                 "message": "The model was unable to make a prediction"}  
 
-def get_predictions(chars, speed):
-    return {"serial_number":chars,
+INTERNAL_SERVER_ERROR = {"code": 400,
+                "message": "Internal server error!"}
+
+def get_predictions(chars, images, speed):
+    return {"serial_number": chars,
+            "images": images,
             "length": len(chars.replace("-", "")),
             "speed": f"{speed:.2f} seconds.",
             "code": 200}  

@@ -79,8 +79,8 @@ class CharactersDetectionModelV2:
             chars[i] = CharactersDetectionModelV2.char_to_digit.get(chars[i], chars[i])
         chars = f"{''.join(chars[:4])}-{''.join(chars[4:-1])}-{chars[-1]}"
         return chars
+    
 """
-
 img1_path = Path("/Users/luksuz/Desktop/container_ocr/BBCU5100638.jpeg")
 img2_path = Path("/Users/luksuz/Desktop/container_ocr/NYKU4576570.jpg")
 img3_path = Path("/Users/luksuz/Desktop/container_ocr/ICOU6024116.png")
@@ -89,4 +89,4 @@ img5_path = Path("/Users/luksuz/Desktop/container_ocr/DSCF1594.jpg")
 img = Image.open(img5_path)
 model = RegionDetectionModel()
 model.get_serial_region(img)
-        """
+"""

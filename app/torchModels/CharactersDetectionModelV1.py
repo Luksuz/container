@@ -53,6 +53,7 @@ class CharactersDetectionModelV1:
         return model
         
     def _get_predictions(self, img_path, conf):
+        print(img_path)
         img = Image.open(img_path)
         labels = self.model.predict(img_path, confidence=conf, overlap=30).json()["predictions"]
         return labels, img

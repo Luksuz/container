@@ -1,5 +1,9 @@
 import torch
-from PIL import ImageDraw
+from PIL import ImageDraw, Image
+import base64
+from io import BytesIO
+
+
 
 class RegionDetectionModel:
     weights_path = "weights/last.pt"
@@ -14,32 +18,37 @@ class RegionDetectionModel:
         labels = preds.xyxy[0]
         return labels, img
     
-    def get_serial_region(self, img,  show=False):
+    def get_serial_region(self, img):
         labels, img = self._get_predictions(img)
         if len(labels) == 0:
             return False
         
+        cropped_images = []
+        for label in sorted(labels, key=lambda x: x[5], reverse=True)[:2]:
+            x1, y1, x2, y2 = [ten.item() for ten in label[:4]]
+
+            cropped_img = img.crop((x1, y1, x2, y2))
+            buffered = BytesIO()
+            cropped_img.save(buffered, format="WEBP")
+            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+            mime_type = "image/webp"
+            base64_url = f"data:{mime_type};base64,{img_str}"
+            
+            cropped_images.append(base64_url)
+            
         best_label = max(labels, key=lambda x: x[5])
 
         x1 = best_label[0].item(); y1 = best_label[1].item()
         x2 = best_label[2].item(); y2 = best_label[3].item()
-        
+
         detected = img.crop((x1, y1, x2, y2))
         filepath = "detected.jpg"
         detected.save(filepath)
-        
-        if show:
-            for label in labels:
-                x1 = label[0].item(); y1 = label[1].item()
-                x2 = label[2].item(); y2 = label[3].item()
 
-                draw = ImageDraw.Draw(img)
-                draw.rectangle([x1, y1, x2, y2], outline="green", width=3)
-            img.show()
-            
-        return filepath
+        return filepath, cropped_images
+    
+    
 """
-
 img1_path = Path("/Users/luksuz/Desktop/container_ocr/BBCU5100638.jpeg")
 img2_path = Path("/Users/luksuz/Desktop/container_ocr/NYKU4576570.jpg")
 img3_path = Path("/Users/luksuz/Desktop/container_ocr/ICOU6024116.png")
